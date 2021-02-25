@@ -7,19 +7,25 @@ import android.text.TextWatcher
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
-import androidx.core.widget.doAfterTextChanged
+import androidx.core.widget.addTextChangedListener
+import java.util.logging.Logger
+import kotlin.reflect.typeOf
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val button = findViewById<Button>(R.id.button1);
-        val textField = findViewById<EditText>(R.id.textView2);
-        button?.setOnClickListener(){
-            Toast.makeText(this@MainActivity, textField.text.toString(), Toast.LENGTH_SHORT).show();
+        val convertButton = findViewById<Button>(R.id.button1);
+        val inputEditTextField = findViewById<EditText>(R.id.textView2);
+        val resultTextView = findViewById<TextView>(R.id.textView);
+        convertButton?.setOnClickListener(){
+            val string = inputEditTextField.text.toString();
+            val result = string.takeIf { string == "abc" }
+            Toast.makeText(this@MainActivity, result, Toast.LENGTH_SHORT).show();
         }
-        textField.addTextChangedListener(object : TextWatcher {
+        inputEditTextField.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
             }
 
@@ -27,10 +33,22 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s != null) {
-                    Toast.makeText(this@MainActivity, s[s.length-1].toString(), Toast.LENGTH_SHORT).show()
-                };
             }
         })
+    }
+
+    fun convertBinaryToDecimal(num: Long): Int {
+        var num = num
+        var decimalNumber = 0
+        var i = 0
+        var remainder: Long
+
+        while (num.toInt() != 0) {
+            remainder = num % 10
+            num /= 10
+            decimalNumber += (remainder * Math.pow(2.0, i.toDouble())).toInt()
+            ++i
+        }
+        return decimalNumber
     }
 }
